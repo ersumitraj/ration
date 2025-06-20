@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="font-size: 2rem;">👧 कार्ड व्यू</h2>
+        <a href="/table" class="btn btn-lg btn-outline-primary">📋 टेबल व्यू</a>
+    </div>
+
+    {% for row in data %}
+    <div class="card border-{{ 'success' if row.get('Status') == 'Paid' else 'warning' }} shadow mb-4">
+        <div class="card-body" style="font-size: 1.4rem;">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0" style="font-size: 1.6rem; font-weight: bold;">
+                    👧 {{ row['नाम'] }}
+                    {% if row.get('Status') == 'Paid' %}
+                        <span class="badge bg-success ms-2">Paid</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark ms-2">Unpaid</span>
+                    {% endif %}
+                </h5>
+                <form method="POST" action="/mark_paid/{{ loop.index0 }}">
+                    <button class="btn btn-{{ 'warning' if row.get('Status') == 'Paid' else 'success' }} btn-sm">
+                        {% if row.get('Status') == 'Paid' %}Mark Unpaid{% else %}Mark Paid{% endif %}
+                    </button>
+                </form>
+            </div>
+
+            <div class="row">
+                {% for key, value in row.items() %}
+                    {% if key not in ['नाम', 'Status'] %}
+                        <div class="col-md-6 mb-3">
+                            <strong>{{ key }}:</strong>
+                            {% if 'मोबाईल' in key %}
+                                <a href="tel:{{ value|trim }}" style="text-decoration: none; color: #0d6efd; font-weight: bold;">
+                                    {{ value }}
+                                </a>
+                            {% elif key in ['Ref_Id', 'Date', 'आधार नंबर'] %}
+                                <span style="font-weight: bold;">{{ value }}</span>
+                            {% else %}
+                                {{ value }}
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
